@@ -32,10 +32,15 @@ st.divider()
 submit_button = st.button("Skicka")
 
 # POST Request API
-def send_post_request(input_text, workout_length):
+def send_post_request(input_text, workout_length, number_of_people, arrival_date):
     url = "https://api.retool.com/v1/workflows/49b9ad64-b79c-4433-8dbc-d591e1016fa7/startTrigger?workflowApiKey=retool_wk_8f83ae0a17bb46d0a45ee6382cece909"
     headers = {'Content-Type': 'application/json'}
-    data = {"body": input_text, "workout_length": workout_length}
+    data = {
+        "body": input_text, 
+        "workout_length": workout_length, 
+        "number_of_people": number_of_people, 
+        "arrival_date": arrival_date.strftime("%Y-%m-%d")  # Assuming arrival_date is a datetime object
+    }
     
     with st.spinner('Vi letar aktiviteter och rekommendationer...'):
         response = requests.post(url, json=data, headers=headers)
@@ -52,7 +57,7 @@ def send_post_request(input_text, workout_length):
 # Button Click
 if submit_button:
     if user_input:
-        data_field = send_post_request(user_input, workout_length)
+        data_field = send_post_request(user_input, workout_length, number_of_people, d[0])
         st.write("Response Data:")
         st.write(data_field)
     else:
