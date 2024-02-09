@@ -63,9 +63,13 @@ if submit_button:
     else:
         st.error("Du måste ju skriva något...")
 
+# ULR list based on the Vector from Retool
 
 st.divider()    
 st.title("Lista på URL:er")
+search_term = st.text_input("Search URLs:")
+filtered_df = df[df["URLs"].str.contains(search_term)]
+st.table(filtered_df)
 # Send GET request to API
 url = "https://api.retool.com/v1/workflows/643e51d9-8a0f-4721-b65e-6de2787414f5/startTrigger?workflowApiKey=retool_wk_cbbfe6b6719545999f2eee687382b0f9"
 response = requests.get(url)
@@ -73,12 +77,21 @@ response = requests.get(url)
 # Check if the request was successful
 if response.status_code == 200:
     # Parse the JSON response
-    data = response.json()
+    response_data = response.json()
+
+    # Extract the list of URLs from the response data
+    data = response_data.get("data", [])
 
     # Convert the list into a DataFrame
     df = pd.DataFrame(data, columns=["URLs"])
 
-    # Display the data in a table
-    st.table(df)
+    # Add a search field
+    search_term = st.text_input("Search URLs:")
+
+    # Filter the DataFrame based on the search term
+    filtered_df = df[df["URLs"].str.contains(search_term)]
+
+    # Display the filtered data in a table
+    st.table(filtered_df)
 else:
     st.error("Failed to fetch data from API")
