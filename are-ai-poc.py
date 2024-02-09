@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import pandas as pd
 import datetime
 import json
 
@@ -61,3 +62,23 @@ if submit_button:
         st.write(data_field)
     else:
         st.error("Du måste ju skriva något...")
+
+
+st.divider()    
+st.title("Lista på URL:er")
+# Send GET request to API
+url = "https://api.retool.com/v1/workflows/643e51d9-8a0f-4721-b65e-6de2787414f5/startTrigger?workflowApiKey=retool_wk_cbbfe6b6719545999f2eee687382b0f9"
+response = requests.get(url)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response
+    data = response.json()
+
+    # Convert the list into a DataFrame
+    df = pd.DataFrame(data, columns=["URLs"])
+
+    # Display the data in a table
+    st.table(df)
+else:
+    st.error("Failed to fetch data from API")
