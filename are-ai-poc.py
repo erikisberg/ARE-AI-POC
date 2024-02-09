@@ -4,9 +4,14 @@ import datetime
 import json
 
 today = datetime.datetime.now()
-next_year = today.year + 1
+next_year = today.year
 jan_1 = datetime.date(next_year, 1, 1)
 dec_31 = datetime.date(next_year, 12, 31)
+
+min_year = 2020
+max_year = 2030
+min_date = datetime.date(min_year, 1, 1)
+max_date = datetime.date(max_year, 12, 31)
 
 # Streamlit UI Components
 st.title("Åre Destination AI-POC")
@@ -22,24 +27,23 @@ number_of_people = st.slider('Hur många personer är det i ert sällskap?', min
 d = st.date_input(
     "När kommer ni till Åre?",
     value=(jan_1, datetime.date(next_year, 1, 7)),
-    min_value=jan_1,
-    max_value=dec_31,
+    min_value=min_date,
+    max_value=max_date,
     format="DD.MM.YYYY",
 )
-
-st.write('Anländer:', d)
+huvudfokus_semester = st.selectbox('Vad är huvudfokus för semestern?', ["Massa äventy och aktiviter", "Mysa och slappna av", "Semester med familj och småbarn", "Äldre personer som vill njuta av åre", "Romantisk par-weekend för kärleksparet"])
 st.divider()
 submit_button = st.button("Skicka")
 
 # POST Request API
-def send_post_request(input_text, workout_length, number_of_people, arrival_date):
+def send_post_request(input_text, workout_length, number_of_people, arrival_date, huvudfokus_semester):
     url = "https://api.retool.com/v1/workflows/49b9ad64-b79c-4433-8dbc-d591e1016fa7/startTrigger?workflowApiKey=retool_wk_8f83ae0a17bb46d0a45ee6382cece909"
     headers = {'Content-Type': 'application/json'}
     data = {
         "body": input_text, 
-        "workout_length": workout_length, 
         "number_of_people": number_of_people, 
-        "arrival_date": arrival_date.strftime("%Y-%m-%d")  # Assuming arrival_date is a datetime object
+        "arrival_date": arrival_date.strftime("%Y-%m-%d"),  # Assuming arrival_date is a datetime object
+        "huvudfokus_semester": huvudfokus_semester
     }
     
     with st.spinner('Vi letar aktiviteter och rekommendationer...'):
@@ -57,7 +61,7 @@ def send_post_request(input_text, workout_length, number_of_people, arrival_date
 # Button Click
 if submit_button:
     if user_input:
-        data_field = send_post_request(user_input, workout_length, number_of_people, d[0])
+        data_field = send_post_request(user_input, workout_length, number_of_people, d[0], selected_theme)
         st.write("Response Data:")
         st.write(data_field)
     else:
