@@ -29,7 +29,7 @@ arrival_dates = st.date_input(
     "När kommer ni till Åre?",
     value=(jan_1, datetime.date(next_year, 1, 7)),
 )
-huvudfokus_semester = st.selectbox('Vad är huvudfokus för er semester?', ["Nöjen och äventyr", "Relax och avslappning", "Äldre människor som vill uppleva Åre", "Romantisk getaway med min partner", "Romantik"])
+huvudfokus_semester = st.selectbox('Vad är huvudfokus för er semester?', ["Nöjen och äventyr", "Relax och avslappning", "Äldre människor som vill uppleva Åre", "Romantisk getaway med min partner"])
 submit_button = st.button('Hitta aktiviteter')
 
 # POST Request API
